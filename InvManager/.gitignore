@@ -1,0 +1,8 @@
+target
+.classpath
+.project
+org.eclipses.core.resources.prefs
+org.eclipse.jdt.core.prefs
+org.eclipse.m2e.core.prefs
+Design Notes
+pom.properties
