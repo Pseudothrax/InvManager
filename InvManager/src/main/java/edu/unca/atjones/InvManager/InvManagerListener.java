@@ -1,5 +1,6 @@
 package edu.unca.atjones.InvManager;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -30,6 +31,7 @@ public class InvManagerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         //Load the player's inventory data from metadata
+    	
     }
     
     @EventHandler
@@ -40,6 +42,13 @@ public class InvManagerListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
     	//increment the player's block count
+    	Player p = event.getPlayer();
+    	if(plugin.blocks.containsKey(p)) {
+    		plugin.blocks.put(p.getName(), plugin.blocks.get(p) + 1);
+    	} else {
+    		plugin.blocks.put(p.getName(), 1);
+    	}
+    	p.sendMessage("Blocks Broken: " + String.valueOf(plugin.blocks.get(p)));
     }
     
     @EventHandler
