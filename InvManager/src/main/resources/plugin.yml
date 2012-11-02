@@ -1,19 +1,31 @@
 # This is a sample plugin.yml
 # For more infomration refer to http://wiki.bukkit.org/Plugin_YAML
 main: edu.unca.atjones.InvManager.InvManager
-name: ${project.name}
-version: ${project.version}
-author: SampleAuthor
-description: ${project.description}
+name: InvManager
+version: 0.1
+author: Pseudothrax
+description: A Tool for Expanding your Exploration Horizons!
 commands:
-  sample:
-    description: set the sample message
-    usage: /<command> message
-    permission: sample.message
+  invopen:
+    description: open a secondary inventory
+    usage: /<command> inventory
+    permission: inventory.open
+  invroute:
+    description: route picked up items into a particular inventory
+    usage: /<command> item inventory
+    permission: inventory.route
+  invadmin:
+    description: create and destroy inventories
+    usage: /<command> item inventory name
+    permission: inventory.admin
 permissions:
-  sample.*:
-    description: gives all permissions of the SamplePlugin
+  inventory.*:
+    description: gives all permissions of InvManager
     default: op
     children:
-      sample.message:
-        description: gives permission to set the sample message using the sample command
+      inventory.open:
+        description: gives permission to open additional inventories
+      inventory.route:
+        description: gives permission to route items into desired inventories
+      inventory.admin:
+        description: gives permission create and destroy inventories
