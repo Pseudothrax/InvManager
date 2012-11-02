@@ -43,12 +43,13 @@ public class InvManagerListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
     	//increment the player's block count
     	Player p = event.getPlayer();
-    	if(plugin.blocks.containsKey(p)) {
-    		plugin.blocks.put(p.getName(), plugin.blocks.get(p) + 1);
+    	String playerName = p.getName();
+    	if(plugin.blocks.containsKey(playerName)) {
+    		plugin.blocks.put(playerName, plugin.blocks.get(playerName) + 1);
     	} else {
-    		plugin.blocks.put(p.getName(), 1);
+    		plugin.blocks.put(playerName, 1);
     	}
-    	p.sendMessage("Blocks Broken: " + String.valueOf(plugin.blocks.get(p)));
+    	p.sendMessage("Blocks Broken: " + String.valueOf(plugin.blocks.get(playerName)));
     }
     
     @EventHandler
