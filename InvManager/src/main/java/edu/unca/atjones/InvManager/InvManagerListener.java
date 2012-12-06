@@ -15,34 +15,14 @@ import org.bukkit.inventory.ItemStack;
 
 import edu.unca.atjones.MoreEvents.InventoryAddEvent;
 
-/*
- * This is a sample event listener
- */
 public class InvManagerListener implements Listener {
     private final InvManager plugin;
 
-    /*
-     * This listener needs to know about the plugin which it came from
-     */
     public InvManagerListener(InvManager plugin) {
         // Register the listener
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         
         this.plugin = plugin;
-    }
-
-    /*
-     * Send the sample message to all players that join
-     */
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        //Load the player's inventory data from metadata
-    	
-    }
-    
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-    	//Save the player's inventory data into metadata
     }
     
     @EventHandler
@@ -68,14 +48,6 @@ public class InvManagerListener implements Listener {
         		plugin.blocks.put(playerName, 1);
         	}
     	}
-    	
-
-    }
-    
-    @EventHandler
-    public void onInventory(InventoryEvent event) {
-    	plugin.logger.info("Inventory Event");
-    	
     }
     
     @EventHandler
@@ -95,18 +67,14 @@ public class InvManagerListener implements Listener {
         			String destName = playerRoutes.get(itemId);
         			if(playerInventories.containsKey(destName)) {
         				Inventory dest = playerInventories.get(destName);
-        				event.setCancelled(true);
-        				dest.addItem(item);
+        				if(dest.firstEmpty() != -1) {
+            				event.setCancelled(true);
+            				dest.addItem(item);
+        				}
         			}
         		};
     		}
     	}
     }
-    
-    @EventHandler
-    public void onOpenInventory(InventoryOpenEvent event) {
-    	plugin.logger.info(event.getInventory().getTitle() + " Opened");
-    }
-    
 
 }

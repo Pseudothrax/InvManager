@@ -47,7 +47,6 @@
     <dependency>
     	<groupId>edu.unca.atjones</groupId>
     	<artifactId>MoreEvents</artifactId>
-    	<version>0.0.1-SNAPSHOT</version>
     	<scope>provided</scope>
     </dependency>
   </dependencies>
@@ -83,4 +82,13 @@
       </plugin>
     </plugins>
   </build>
+  <dependencyManagement>
+  	<dependencies>
+  		<dependency>
+  			<groupId>edu.unca.atjones</groupId>
+  			<artifactId>MoreEvents</artifactId>
+  			<version>0.0.1-SNAPSHOT</version>
+  		</dependency>
+  	</dependencies>
+  </dependencyManagement>
 </project>
