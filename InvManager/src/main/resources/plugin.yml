@@ -1,31 +1,136 @@
 # This is a sample plugin.yml
-# For more infomration refer to http://wiki.bukkit.org/Plugin_YAML
+# For more information refer to http://wiki.bukkit.org/Plugin_YAML
 main: edu.unca.atjones.InvManager.InvManager
 name: InvManager
 version: 0.1
 author: Pseudothrax
 description: A Tool for Expanding your Exploration Horizons!
+
 commands:
+  invcreate:
+    description: create inventories
+    usage: /<command> item inventory label
+  invgrant:
+    description: grant inventory upgrades
+    usage: /<command> item inventory label
+  invhelp:
+    description: view the usage tip for inventory commands
+    usage: /<command>
+  invlist:
+    description: view the player's inventories
+    usage: /<command>
   invopen:
     description: open a secondary inventory
     usage: /<command> inventory
-    permission: inventory.open
+  invremove:
+    description: remove an inventory by name
+    usage: /<command> inventory
+  invrename:
+    description: open an inventory
+    usage: /<command> inventory
   invroute:
-    description: route picked up items into a particular inventory
+    description: route an item to an inventory
     usage: /<command> item inventory
-    permission: inventory.route
-  invadmin:
-    description: create and destroy inventories
-    usage: /<command> item inventory name
-    permission: inventory.admin
+  invroutes:
+    description: list player routes
+    usage: /<command> item inventory
+  invupgrade:
+    description: upgrade an inventory
+    usage: /<command> item inventory
+  invupgrades:
+    description: get available upgrades
+    usage: /<command> item inventory
+
 permissions:
   inventory.*:
-    description: gives all permissions of InvManager
+    description: gives all user permissions of InvManager
+    default: false
+    children:
+      inventory.create: true
+      inventory.help: true
+      inventory.list: true
+      inventory.open: true
+      inventory.rename: true
+      inventory.route: true
+      inventory.routes: true
+      inventory.upgrade: true
+      inventory.upgrades: true
+      inventory.reward: true
+  inventory.create:
+    description: permission to create inventories.
+    default: false
+  inventory.help:
+    description: permission to view InvManager help.
+    default: false
+  inventory.list:
+    description: permission to view inventories.
+    default: false
+  inventory.open:
+    description: permission to open inventories.
+    default: false
+  inventory.rename:
+    description: permission to open inventories.
+    default: false
+  inventory.route:
+    description: permission to route items.
+    default: false
+  inventory.routes:
+    description: list player routes.
+    default: false
+  inventory.upgrade:
+    description: permission to upgrade inventories.
+    default: false
+  inventory.upgrades:
+    description: permission to view upgrade count.
+    default: false
+  inventory.reward:
+    description: allows player to get upgrades by breaking blocks.
+    default: false
+  inventory.admin.*:
+    description: gives all admin permissions of InvManager
     default: op
     children:
-      inventory.open:
-        description: gives permission to open additional inventories
-      inventory.route:
-        description: gives permission to route items into desired inventories
-      inventory.admin:
-        description: gives permission create and destroy inventories
+      inventory.admin.create: true
+      inventory.admin.grant: true
+      inventory.admin.help: true
+      inventory.admin.list: true
+      inventory.admin.open: true
+      inventory.admin.remove: true
+      inventory.admin.rename: true
+      inventory.admin.route: true
+      inventory.admin.routes: true
+      inventory.admin.upgrade: true
+      inventory.admin.upgrades: true
+  inventory.admin.create:
+    description: permission to create inventories.
+    default: op
+  inventory.admin.grant:
+    description: permission to grant inventory upgrades.
+    default: op
+  inventory.admin.help:
+    description: permission to view InvManager help.
+    default: op
+  inventory.admin.list:
+    description: permission to view inventories.
+    default: op
+  inventory.admin.open:
+    description: permission to open inventories.
+    default: op
+  inventory.admin.remove:
+    description: permission to open inventories.
+    default: op
+  inventory.admin.rename:
+    description: permission to open inventories.
+    default: op
+  inventory.admin.route:
+    description: permission to route items.
+    default: op
+  inventory.admin.routes:
+    description: view player routes.
+    default: op
+  inventory.admin.upgrade:
+    description: permission to upgrade inventories.
+    default: op
+  inventory.admin.upgrades:
+    description: permission to view upgrade count.
+    default: op

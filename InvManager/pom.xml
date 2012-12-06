@@ -44,6 +44,12 @@
       <type>jar</type>
       <scope>test</scope>
     </dependency>
+    <dependency>
+    	<groupId>edu.unca.atjones</groupId>
+    	<artifactId>MoreEvents</artifactId>
+    	<version>0.0.1-SNAPSHOT</version>
+    	<scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
