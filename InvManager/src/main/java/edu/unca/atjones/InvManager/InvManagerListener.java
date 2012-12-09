@@ -6,14 +6,10 @@ import java.util.Random;
 import net.minecraft.server.EntityItem;
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.EntityTracker;
-import net.minecraft.server.ItemInWorldManager;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.Packet22Collect;
 import net.minecraft.server.WorldServer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -75,24 +71,16 @@ public class InvManagerListener implements Listener {
         		if(playerRoutes.containsKey(typeId)) {
         			String destName = playerRoutes.get(typeId);
         			if(playerInventories.containsKey(destName)) {
-        				InvManagerInventory dest = (InvManagerInventory) playerInventories.get(destName);
-        				
+        				event.setCancelled(true);
     			    	String worldName = item.getWorld().getName();
-    			    	CraftServer cserver = (CraftServer) Bukkit.getServer();
-    			    	MinecraftServer mcserver = cserver.getServer();
-    			    	
-    			    	CraftWorld w = (CraftWorld) cserver.getWorld(worldName);
-    			    	Location location = p.getLocation();
+    			    	CraftWorld w = (CraftWorld) Bukkit.getServer().getWorld(worldName);
     			    	WorldServer worldserver = w.getHandle();
-    			    	ItemInWorldManager iiw = new ItemInWorldManager(worldserver);
-    					
     					EntityItem entity = (EntityItem) worldserver.getEntity(item.getEntityId());
     					EntityPlayer player = (EntityPlayer) worldserver.getEntity(p.getEntityId());
     							
     					entity.pickupDelay = 0;
-    					p.sendMessage(String.format("Delay: %d",entity.pickupDelay));
+    					InvManagerInventory dest = (InvManagerInventory) playerInventories.get(destName);
     					if ( ( (MinecraftInventory) dest.getInventory()).pickup(entity.itemStack) ) {
-    						p.sendMessage("yes");
     						Random random = new Random();
     						entity.world.makeSound(entity, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
     						EntityTracker entitytracker = worldserver.getTracker();
@@ -101,7 +89,6 @@ public class InvManagerListener implements Listener {
     			            	entity.die();
     			            }
     			        }
-    					event.setCancelled(true);
         			}
         		};
     		}
