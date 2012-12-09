@@ -40,8 +40,12 @@ commands:
   invupgrades:
     description: get available upgrades
     usage: /<command> item inventory
+  invsave:
+    permissions: inventory.save
 
 permissions:
+  inventory.save:
+    default: true
   inventory.*:
     description: gives all user permissions of InvManager
     default: false

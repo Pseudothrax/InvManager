@@ -1,8 +1,8 @@
 package edu.unca.atjones.InvManager;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Set;
+
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,9 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
-/*
- * This is the main class of the sample plug-in
- */
 public final class InvManager extends JavaPlugin {
     
 	HashMap<String,HashMap<String,Inventory>> inventories;
@@ -22,11 +19,15 @@ public final class InvManager extends JavaPlugin {
 	
 	InvManagerLogger logger;
 	
+	public InvManagerDatabase database;
+	
     @Override
     public void onEnable() {
 
 		logger = new InvManagerLogger(this);
 		logger.info("plugin enabled");
+		
+		database = new InvManagerDatabase(this);
 		
 		inventories = new HashMap<String,HashMap<String,Inventory>>();
 		routes = new HashMap<String,HashMap<Integer,String>>();
@@ -50,13 +51,15 @@ public final class InvManager extends JavaPlugin {
         this.getCommand("invroutes").setExecutor(new InvManagerCommandExecutor(this));
         this.getCommand("invupgrade").setExecutor(new InvManagerCommandExecutor(this));
         this.getCommand("invupgrades").setExecutor(new InvManagerCommandExecutor(this));
+        this.getCommand("invsave").setExecutor(new InvManagerCommandExecutor(this)); 
         
     }
     
     @Override
     public void onDisable() {
-        
+    	database.close();
     }
+    
     
     public void showInventory(Player owner,String name) throws InvManagerException {
     	if(name == null) {
@@ -69,7 +72,7 @@ public final class InvManager extends JavaPlugin {
     	if(!invs.containsKey(name)){
     		throw new InvManagerException("You have no inventory called " + name);
     	}
-    	Inventory inv = invs.get(name);
+    	InvManagerInventory inv = (InvManagerInventory) invs.get(name);
     	owner.openInventory(inv);
     }
     
@@ -90,7 +93,7 @@ public final class InvManager extends JavaPlugin {
     		invs = new HashMap<String,Inventory>();
     	}
 		if(invs.containsKey(name)) throw new InvManagerException("An inventory by that name already exists");
-    	Inventory newInv = Bukkit.getServer().createInventory(owner, size, name);
+    	InvManagerInventory newInv = new InvManagerInventory(owner, size, name);
 		invs.put(name, newInv);
 		inventories.put(owner.getName(), invs);
     }
@@ -102,7 +105,7 @@ public final class InvManager extends JavaPlugin {
     			Inventory i = invs.get(name);
     			if(i.getSize() != 27){
     				int size = i.getSize() + 9;
-    				Inventory I = Bukkit.getServer().createInventory(owner, size, name);
+    				InvManagerInventory I = new InvManagerInventory(owner, size, name);
     				I.setContents(i.getContents());
     				invs.put(name, I);
     				inventories.put(owner.getName(), invs);

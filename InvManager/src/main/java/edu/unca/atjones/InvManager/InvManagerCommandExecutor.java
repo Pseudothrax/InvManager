@@ -1,10 +1,7 @@
 package edu.unca.atjones.InvManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -23,9 +20,9 @@ public class InvManagerCommandExecutor implements CommandExecutor{
     }
     
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    	String name = cmd.getName();
     	if(sender instanceof Player) {
     		Player p = (Player)sender;
-    		String name = cmd.getName();
     		
         	if(name.equalsIgnoreCase("invcreate")) {
         		if( p.hasPermission("inventory.admin.create") ) {
@@ -290,10 +287,17 @@ public class InvManagerCommandExecutor implements CommandExecutor{
     			}
     			else p.sendMessage("You cannot execute this command.");
         		return true;
-	    	}        	
+	    	}
         	
-    	} else
-    	sender.sendMessage("Command must be executed by a player!");
+    		if(name.equalsIgnoreCase("invsave")) {
+    			if( p.hasPermission("inventory.save")) {
+    				plugin.database.storeInventory(p, p.getInventory());
+    			}
+    		}
+    		
+    	} else {
+    		sender.sendMessage("Command must be executed by a player!");
+    	}
     	return false;
     }
 }

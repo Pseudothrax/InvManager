@@ -1,19 +1,29 @@
 package edu.unca.atjones.InvManager;
 
 import java.util.HashMap;
+import java.util.Random;
 
+import net.minecraft.server.EntityItem;
+import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.EntityTracker;
+import net.minecraft.server.ItemInWorldManager;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.Packet22Collect;
+import net.minecraft.server.WorldServer;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.inventory.InventoryEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
-import edu.unca.atjones.MoreEvents.InventoryAddEvent;
+import edu.unca.atjones.InvManager.InvManagerInventory.MinecraftInventory;
 
 public class InvManagerListener implements Listener {
     private final InvManager plugin;
@@ -51,30 +61,50 @@ public class InvManagerListener implements Listener {
     }
     
     @EventHandler
-    public void onInventoryAdd(InventoryAddEvent event) {
-    	//route the item according to assigned routing rules
-    	Player p = (Player)event.getPlayer();
-    	String player = p.getName();
-    	ItemStack item = event.getItemStack();
-    	int itemId = item.getData().getItemTypeId();
-    	String itemName = item.getData().getItemType().toString();
+    public void onPickupItem(PlayerPickupItemEvent event) {
+    	Player p = event.getPlayer();
+    	String playerName = p.getName();
     	
-    	if(plugin.inventories.containsKey(player)) {
-    		if(plugin.routes.containsKey(player)) {
-    			HashMap<Integer,String> playerRoutes = plugin.routes.get(player);
-        		HashMap<String,Inventory> playerInventories = plugin.inventories.get(player);
-        		if(playerRoutes.containsKey(itemId)) {
-        			String destName = playerRoutes.get(itemId);
+    	Item item = event.getItem();
+    	int typeId = item.getItemStack().getTypeId();
+    	
+    	if(plugin.inventories.containsKey(playerName)) {
+    		if(plugin.routes.containsKey(playerName)) {
+    			HashMap<Integer,String> playerRoutes = plugin.routes.get(playerName);
+        		HashMap<String,Inventory> playerInventories = plugin.inventories.get(playerName);
+        		if(playerRoutes.containsKey(typeId)) {
+        			String destName = playerRoutes.get(typeId);
         			if(playerInventories.containsKey(destName)) {
-        				Inventory dest = playerInventories.get(destName);
-        				if(dest.firstEmpty() != -1) {
-            				event.setCancelled(true);
-            				dest.addItem(item);
-        				}
+        				InvManagerInventory dest = (InvManagerInventory) playerInventories.get(destName);
+        				
+    			    	String worldName = item.getWorld().getName();
+    			    	CraftServer cserver = (CraftServer) Bukkit.getServer();
+    			    	MinecraftServer mcserver = cserver.getServer();
+    			    	
+    			    	CraftWorld w = (CraftWorld) cserver.getWorld(worldName);
+    			    	Location location = p.getLocation();
+    			    	WorldServer worldserver = w.getHandle();
+    			    	ItemInWorldManager iiw = new ItemInWorldManager(worldserver);
+    					
+    					EntityItem entity = (EntityItem) worldserver.getEntity(item.getEntityId());
+    					EntityPlayer player = (EntityPlayer) worldserver.getEntity(p.getEntityId());
+    							
+    					entity.pickupDelay = 0;
+    					p.sendMessage(String.format("Delay: %d",entity.pickupDelay));
+    					if ( ( (MinecraftInventory) dest.getInventory()).pickup(entity.itemStack) ) {
+    						p.sendMessage("yes");
+    						Random random = new Random();
+    						entity.world.makeSound(entity, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+    						EntityTracker entitytracker = worldserver.getTracker();
+    						entitytracker.a(entity, new Packet22Collect(entity.id, player.id));
+    			            if (entity.itemStack.count <= 0) {
+    			            	entity.die();
+    			            }
+    			        }
+    					event.setCancelled(true);
         			}
         		};
     		}
-    	}
+    	}	
     }
-
 }
